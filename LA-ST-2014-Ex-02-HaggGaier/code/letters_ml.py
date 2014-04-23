@@ -25,6 +25,8 @@ class ScalabilityQuestion(object):
         # The first column of data is of type string, amd wasn't read properly
         data_raw = np.genfromtxt('data/letter-recognition/letter-recognition.data',
                                  delimiter=',', dtype=None)
+#        data_raw = np.genfromtxt('data/letter-recognition/letter_test.data',
+#                         delimiter=',', dtype=None)
         letters = list()
         for i in xrange(data_raw.size):
             letters.append(data_raw[i][0])        
@@ -48,29 +50,51 @@ class ScalabilityQuestion(object):
 s_2_1 = ScalabilityQuestion()
 
   
-i=1
-mins = 15
+i=0
+mins = 0.1
+
+
 #Run Classifier with increasing numbers of samples until it takes mins minutes
 while True:
+    i+=1
+    samples = i*100
     start_time = time.time()
-    X = s_2_1.data[0:i*100][:,0:15]
-    Y = s_2_1.encoded_letters[0:i*100][:]
-    s_2_1.build_classifier(X, Y)
-    classifier_time = (time.time() - start_time)    
+    training_X = s_2_1.data[0:samples][:,0:15]
+    training_Y = s_2_1.encoded_letters[0:samples][:]
+    
+    s_2_1.build_classifier(training_X, training_Y)
+    classifier_time = (time.time() - start_time)         
+    
+    test_X = s_2_1.data[samples:][:,0:15]
+    test_Y = s_2_1.encoded_letters[samples:][:]
     
     #don't include visualization in classifier performance
-    s_2_1.draw_graph(s_2_1.clf, '8_'+str(i*100)) 
+    #s_2_1.draw_graph(s_2_1.clf, '8_'+str(samples)) 
 
     with open('./timefile', 'a') as f:
         #f.write(str(i*100) + ' samples in ' + str(time.time() - start_time) + ' seconds\n')
-        f.write(str(i*100) + ',' + str(classifier_time) + '\n')
+        f.write(str(samples) + ',' + str(classifier_time) + '\n')
+    
+    count = 0
+    letter_perf = np.zeros((26,2)) 
+    for letter in range(len(test_X)):
+        prediction = s_2_1.clf.predict(test_X[letter])
+        actual = test_Y[letter]
+        if actual == prediction:
+            letter_perf[actual,0] += 1
+        else:
+            letter_perf[actual,1] += 1
+        count +=1
+        
+        
+    lfname = ('./letterdata' + str(samples))
+    with open(lfname, 'w') as lf:
+        lf.write(str(letter_perf))
+        lf.close()
+    
     if classifier_time > 60*mins:
-        break
-    i+=1
-    
-    
-    
-    
+        break    
+    print count
     
     
     
