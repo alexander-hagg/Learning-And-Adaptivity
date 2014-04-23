@@ -33,5 +33,24 @@ class ScalabilityQuestion(object):
         self.le = sklearn.preprocessing.LabelEncoder()
         self.le.fit(letters)
         self.encoded_letters = self.le.transform(letters)[:,np.newaxis]
+
+    def build_classifier(self, data, labels, criterion='gini'):
+        clf = tree.DecisionTreeClassifier(criterion)
+        self.clf = clf.fit(data, labels)
         
+    def draw_graph(self, classifier, filename="out"):
+        dot_data = StringIO()    
+        tree.export_graphviz(classifier, out_file=dot_data)
+        graph = pydot.graph_from_dot_data(dot_data.getvalue())
+        graph.write_svg(filename+".svg")        
         
+s_2_1 = ScalabilityQuestion()
+
+for i in range(1,4):    
+    X = s_2_1.data[0:i*100][:,0:15]
+    Y = s_2_1.encoded_letters[0:i*100][:]
+    s_2_1.build_classifier(X, Y)
+    s_2_1.draw_graph(s_2_1.clf, '8_'+str(i))
+
+    
+#s_2_1.draw_graph(s_1_gini.clf, '7-1-gini')
