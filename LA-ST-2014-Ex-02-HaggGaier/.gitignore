@@ -1,0 +1,15 @@
+*.gch
+*.pyc
+*.so
+
+# IDE configuration files
+.vim
+.clang_complete
+.project
+.cproject
+
+# MacOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
