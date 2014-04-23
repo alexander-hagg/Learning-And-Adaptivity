@@ -49,13 +49,13 @@ class SimplePredictionQuestion(object):
         graph.write_svg(filename+".svg")
 
 s_1_gini = SimplePredictionQuestion()
-X = s_1_gini.data[:][:,1:16]
+X = s_1_gini.data[:][:,0:15]
 Y = s_1_gini.data[:][:,16]
 s_1_gini.build_classifier(X, Y)
 s_1_gini.draw_graph(s_1_gini.clf, '7-1-gini')
 
 s_1_entropy = SimplePredictionQuestion()
-X = s_1_entropy.data[:][:,1:16]
+X = s_1_entropy.data[:][:,0:15]
 Y = s_1_entropy.data[:][:,16]
 s_1_entropy.build_classifier(X, Y, 'entropy')
 s_1_entropy.draw_graph(s_1_entropy.clf, '7-1-entropy')
@@ -63,13 +63,13 @@ s_1_entropy.draw_graph(s_1_entropy.clf, '7-1-entropy')
 #####
 
 s_2_gini = SimplePredictionQuestion()
-X = s_2_gini.data[:][:,0:16]
+X = np.hstack((s_2_gini.encoded_zoo, s_2_gini.data[:][:,0:15]))
 Y = s_2_gini.data[:][:,16]
 s_2_gini.build_classifier(X, Y)
 s_2_gini.draw_graph(s_2_gini.clf, '7-2-gini')
 
 s_2_entropy = SimplePredictionQuestion()
-X = s_2_entropy.data[:][:,0:16]
+X = np.hstack((s_2_gini.encoded_zoo, s_2_gini.data[:][:,0:15]))
 Y = s_2_entropy.data[:][:,16]
 s_2_entropy.build_classifier(X, Y, 'entropy')
 s_2_entropy.draw_graph(s_2_entropy.clf, '7-2-entropy')
@@ -77,12 +77,17 @@ s_2_entropy.draw_graph(s_2_entropy.clf, '7-2-entropy')
 ####
 
 s_3_gini = SimplePredictionQuestion()
-labels = s_3_gini.data[:][:,4]
-features = s_3_gini.data[:][:,[0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16]]
-
-#X = s_3_gini.data[:][:,0:16]
-Y = labels
+X = s_3_gini.data[:][:,[0,1,2,3,5,6,7,8,9,10,11,12,13,14,15]]
+Y = s_3_gini.data[:][:,4]
 s_3_gini.build_classifier(X, Y)
 s_3_gini.draw_graph(s_3_gini.clf, '7-3-gini')
 
-s_3_gini.clf.predict([[0,0,1,0,0,1,1,1,1,0,0,1,0,1,0,1]])
+#s_3_gini.clf.predict([[0,0,1,0,1,1,1,1,0,0,1,0,1,0,1]])
+
+####
+
+s_4_gini = SimplePredictionQuestion()
+X = s_4_gini.data[:][:,1:16]
+Y = s_4_gini.encoded_zoo
+s_4_gini.build_classifier(X, Y)
+s_4_gini.draw_graph(s_4_gini.clf, '7-4-gini')
