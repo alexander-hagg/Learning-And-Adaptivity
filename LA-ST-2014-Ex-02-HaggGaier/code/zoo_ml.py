@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@author: Alex Moriarty
+@author: Alexander Hagg and Adam Gaier
 """
 import numpy as np
 import sklearn
@@ -16,7 +16,9 @@ import pydot
 # print A[np.newaxis, :]
 
 class SimplePredictionQuestion(object):
-    
+    def __init__(self):
+        self.prepare_data()
+
     def prepare_data(self):
         # Read the data from file
         data = np.genfromtxt('data/zoo/zoo.data',
@@ -33,7 +35,9 @@ class SimplePredictionQuestion(object):
         self.le = sklearn.preprocessing.LabelEncoder()
         self.le.fit(zoo)
         self.encoded_zoo = self.le.transform(zoo)[:,np.newaxis]
-        5
+        self.zoo = zoo
+        print "done preparing data"
+        
     
     def draw_graph(self, classifier, filename="out.svg"):
         dot_data = StringIO()    
@@ -41,3 +45,5 @@ class SimplePredictionQuestion(object):
         graph = pydot.graph_from_dot_data(dot_data.getvalue())
         graph.write_svg(filename+".svg")
 
+s1 = SimplePredictionQuestion()
+s1.draw_graph()
