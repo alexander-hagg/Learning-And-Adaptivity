@@ -53,13 +53,14 @@ mins = 15
 #Run Classifier with increasing numbers of samples until it takes mins minutes
 while True:
     start_time = time.time()
-    
     X = s_2_1.data[0:i*100][:,0:15]
     Y = s_2_1.encoded_letters[0:i*100][:]
     s_2_1.build_classifier(X, Y)
-    s_2_1.draw_graph(s_2_1.clf, '8_'+str(i*100))
+    classifier_time = (time.time() - start_time)    
+    
+    #don't include visualization in classifier performance
+    s_2_1.draw_graph(s_2_1.clf, '8_'+str(i*100)) 
 
-    classifier_time = (time.time() - start_time)
     with open('./timefile', 'a') as f:
         #f.write(str(i*100) + ' samples in ' + str(time.time() - start_time) + ' seconds\n')
         f.write(str(i*100) + ',' + str(classifier_time) + '\n')
