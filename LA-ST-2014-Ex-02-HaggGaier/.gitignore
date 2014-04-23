@@ -1,3 +1,4 @@
+.spyder*
 *.gch
 *.pyc
 *.so
