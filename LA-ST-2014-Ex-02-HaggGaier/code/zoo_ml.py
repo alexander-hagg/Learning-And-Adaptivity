@@ -17,6 +17,24 @@ import pydot
 
 class SimplePredictionQuestion(object):
     
+    def prepare_data(self):
+        # Read the data from file
+        data = np.genfromtxt('data/zoo/zoo.data',
+                             delimiter=',')
+        self.data = np.delete(data, 0, 1)
+        # The first column of data is of type string, amd wasn't read properly
+        data_raw = np.genfromtxt('data/zoo/zoo.data',
+                                 delimiter=',', dtype=None)
+        zoo = list()
+        for i in xrange(data_raw.size):
+            zoo.append(data_raw[i][0])        
+        zoo = np.array(zoo)
+        # Now encode the strings 
+        self.le = sklearn.preprocessing.LabelEncoder()
+        self.le.fit(zoo)
+        self.encoded_zoo = self.le.transform(zoo)[:,np.newaxis]
+        5
+    
     def draw_graph(self, classifier, filename="out.svg"):
         dot_data = StringIO()    
         tree.export_graphviz(classifier, out_file=dot_data)
