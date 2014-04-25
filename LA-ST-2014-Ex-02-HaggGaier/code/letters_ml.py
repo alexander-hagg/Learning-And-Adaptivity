@@ -40,6 +40,7 @@ class ScalabilityQuestion(object):
         clf = tree.DecisionTreeClassifier(criterion)
         self.clf = clf.fit(data, labels)
         
+        
     def draw_graph(self, classifier, filename="out"):
         dot_data = StringIO()    
         tree.export_graphviz(classifier, out_file=dot_data)
@@ -47,7 +48,7 @@ class ScalabilityQuestion(object):
         graph.write_svg(filename+".svg")        
 
 
-s_2_1 = ScalabilityQuestion()
+
 
   
 i=0
@@ -58,12 +59,15 @@ mins = 0.1
 while True:
     i+=1
     samples = i*100
+    s_2_1 = ScalabilityQuestion()
     start_time = time.time()
     training_X = s_2_1.data[0:samples][:,0:15]
     training_Y = s_2_1.encoded_letters[0:samples][:]
     
     s_2_1.build_classifier(training_X, training_Y)
-    classifier_time = (time.time() - start_time)         
+    classifier_time = (time.time() - start_time)      
+    
+    threshold = s_2_1.clf.tree_.threshold
     
     test_X = s_2_1.data[samples:][:,0:15]
     test_Y = s_2_1.encoded_letters[samples:][:]
@@ -71,9 +75,12 @@ while True:
     #don't include visualization in classifier performance
     #s_2_1.draw_graph(s_2_1.clf, '8_'+str(samples)) 
 
-    with open('./timefile', 'a') as f:
+    #with open('./timefile', 'a') as f:
         #f.write(str(i*100) + ' samples in ' + str(time.time() - start_time) + ' seconds\n')
-        f.write(str(samples) + ',' + str(classifier_time) + '\n')
+        #f.write(str(samples) + ',' + str(classifier_time) + '\n')
+        
+    with open('./treesize_file', 'a') as f:
+        f.write(str(samples) + ',' + str(len(threshold)) + '\n')
     
     count = 0
     letter_perf = np.zeros((26,2)) 
@@ -88,18 +95,15 @@ while True:
         
         
     lfname = ('./letterdata' + str(samples))
-    with open(lfname, 'w') as lf:
-        lf.write(str(letter_perf))
-        lf.close()
+    #with open(lfname, 'w') as lf:
+        #lf.write(str(letter_perf))
+        #lf.close()
+    
+    #s_2_1.draw_graph(s_2_1.clf, lfname)
     
     if classifier_time > 60*mins:
         break    
     print count
-    
-    
-    
-    
-    
     
     
     
