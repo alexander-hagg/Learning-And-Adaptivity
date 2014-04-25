@@ -21,6 +21,7 @@ figure(1);clf;
         alpha(.05);
         plot(x, mean_error, 'k', 'LineWidth', 2)
         plot(x, mean_plus_std, 'b')
+        legend('StdDev','Mean')
         plot(x, mean_minus_std, 'b')
 
         title('Error', 'FontSize', 14)
@@ -28,10 +29,11 @@ figure(1);clf;
                             , '60%', '70%', '80%', '90%', '100%'});
         xlabel('Percent of Total Data used for Training')
         ylabel('Error on Test Set')
+        
 
     subplot(3,1,2)
         time = importdata('timefile');
-        plot(time([1:199],1),time([1:199],2));
+        plot(x,time([1:198],2));
         title('Training Time', 'FontSize', 14)
         set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
                             , '60%', '70%', '80%', '90%', '100%'});
@@ -41,7 +43,7 @@ figure(1);clf;
     subplot(3,1,3)
         hold on
         tree_size = importdata('treesize');
-        plot(tree_size(:,1),tree_size(:,2));
+        plot(x,tree_size([1:198],2));
         title('Tree Size', 'FontSize', 14)
         set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
                             , '60%', '70%', '80%', '90%', '100%'});
