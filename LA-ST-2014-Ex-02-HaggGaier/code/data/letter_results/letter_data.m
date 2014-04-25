@@ -9,26 +9,56 @@ for i=1:198 %last column (199) does not have enough samples
 end
 
 % Plot Results
+figure(1);clf;
+    subplot(3,1,1)
+        hold on
+        %TODO: Shade between lines rather than dotted lines
+        x = linspace(1,198,198);
+        mean_error = mean(error);
+        mean_plus_std = mean(error)+std(error);
+        mean_minus_std = mean(error)-std(error);
+        fill( [x fliplr(x)],  [mean_plus_std fliplr(mean_minus_std)], 'b');
+        alpha(.05);
+        plot(x, mean_error, 'k', 'LineWidth', 2)
+        plot(x, mean_plus_std, 'b')
+        plot(x, mean_minus_std, 'b')
 
-figure(1);
-subplot(2,1,1)
-hold on
-%TODO: Shade between lines rather than dotted lines
-plot(mean(error)+std(error), '-k');
-plot(mean(error)-std(error), '-k');
-plot(mean(error))
-title('Error with increasing Training/Test Ratio')
+        title('Error')
+        set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
+                            , '60%', '70%', '80%', '90%', '100%'});
+        xlabel('Percent of Total Data used for Training')
+        ylabel('Error on Test Set')
 
-meanError = mean(error(:,[40:end]),2);
-subplot(2,1,2)
-bar(meanError)
-set(gca,'Xtick',[1:26])
-set(gca,'XTickLabel',{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'...
-                    , 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'...
-                    , 'u', 'v', 'w', 'x', 'y', 'z'});
-hold on;
-h=errorbar([1:26], meanError, std(error(:,[40:end]),1,2));
-set(h,'linestyle','none', 'color', 'r');
-axis([0 27 0 0.45])
-title('Mean Letter Error Rates (after 20% Training mix)')
+    subplot(3,1,2)
+        time = importdata('timefile');
+        plot(time([1:199],1),time([1:199],2));
+        title('Training Time')
+        set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
+                            , '60%', '70%', '80%', '90%', '100%'});
+        xlabel('Percent of Total Data used for Training')
+        ylabel('Seconds')
+
+    subplot(3,1,3)
+        hold on
+        tree_size = importdata('treesize');
+        plot(tree_size(:,1),tree_size(:,2));
+        title('Tree Size')
+        set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
+                            , '60%', '70%', '80%', '90%', '100%'});
+        xlabel('Percent of Total Data used for Training')
+        ylabel('Nodes')
+
+
+figure(2)
+    meanError = mean(error(:,[40:end]),2);
+    bar(meanError)
+    set(gca,'Xtick',[1:26])
+    set(gca,'XTickLabel',{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'...
+                        , 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'...
+                        , 'u', 'v', 'w', 'x', 'y', 'z'});
+    hold on;
+    h=errorbar([1:26], meanError, std(error(:,[40:end]),1,2));
+    set(h,'linestyle','none', 'color', 'r');
+    axis([0 27 0 0.30])
+    title('Mean Letter Error Rates (20% to 95% Training mix)')
 
