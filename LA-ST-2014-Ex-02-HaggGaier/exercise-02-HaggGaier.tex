@@ -20,6 +20,8 @@
 \usepackage{fix-cm}       % Custom fontsizes
 \usepackage{listings}
 \usepackage{soul}
+\usepackage{svg}
+\usepackage{epstopdf}
 
 %%% Custom sectioning (sectsty package)
 \usepackage{sectsty}	 % Custom sectioning (see below)
@@ -78,7 +80,7 @@
 				\fontsize{25}{25} \usefont{OT1}{phv}{b}{n} \color{gray} \selectfont 
 				}
 \title{Learning and Adaptivity
-\\ Assignment ~\upperRomannumeral{1}}% Title of your article goes here
+\\ Assignment ~\upperRomannumeral{2}}% Title of your article goes here
 \posttitle{\par\end{flushleft}\vskip 0.5em}
 
 \preauthor{\begin{flushleft}
@@ -96,67 +98,142 @@ BRS University of Applied Sciences % Institution of author
 \maketitle
 \thispagestyle{fancy} % Enabling the custom headers/footers for the first page 
 % The first character should be within \initial{}
-\initial{A}\textbf{ one paragraph abstract of the topic which the assignment covers can go here. Try to summarize the topic in five sentences. This should be considered preparation for the exam were you are expected to talk about the subject in your own words.}
-
+\initial{D}\textbf{ } ecision tree learning is used to learn concepts or other discrete-valued functions. It allows building a short tree where nodes represent a decision, based on the value of a certain parameter, which has to be defined for all data tuples. 
 
 \setcounter{section}{5}
 \section{Decision Tree Learning}
 \subsection{Simple Prediction}
 
-\blindenumerate[4]
+\begin{enumerate}
+	\item Predicting animal type from all other attributes (except for the species' name). Two decision trees were built using all data from the zoo database. The next best attribute was chosen using two available methods: gini index and entropy. The gini index on a data set T is defined as $\mathrm{gini(T)} := 1 - \sum_i p_i^2$\footnote{Taken from lecture notes from the "Knowledge Extraction and Machine Learning" course at the University of Porto, http://paginas.fe.up.pt/\textasciitilde ec/}, where $p_i$ is the relative frequency of class $i$. The entropy measure measures the impurity of sample S of training examples. 
+	As can be taken from the results in \ref{7-1-gini} and \ref{7-1-entropy}, they differ in the sense that using the entropy split criterion tends to be a bit more conservative and gini tends to pick and split larger classes faster.
+	
+	\item Predicting animal type from all other attributes (including the species' name). As can be taken from the results in \ref{7-2-gini} and \ref{7-2-entropy}, including the name of the animal, which is unique for every animal, obviously does not help in classification.
+	
+	\item Predicting, whether an animal is airborne, from all other attributes (including type, excluding name). Results can be taken from figure \ref{7-3-gini}. The attributes "feathers", "domestic" and "fins" are the first three best splitters, according to the gini criterion, which leads to large categories being split earlier on in the process.
+	
+	\item Predicting species' name from all other attributes. Figure \ref{7-4-gini} shows that some groups of animals cannot be distinguished, because they have the same attributes. This is shown by the leaves' gini value being greater than zero (the relative frequency of the members of the "class" is not 1).
+\end{enumerate}
 
 \subsection{Scalability}
 
-\blindlist{enumerate}[2]
+\begin{enumerate}
+	\item As we do not use the applet, we did not run into any problems performance wise, as we can choose not to visualize.
+	\item We were not able to visualize the decision trees for training sets large than 200 samples. This issue is known by the TA. Instead, we decided to display the number of nodes in the tree to get a grasp on the size of it. As can be taken from figure \ref{8-2-performance}, the number of nodes is near linear to the percentage of total data used for training. The time taken is linear as well. The top figure in figure \ref{8-2-performance} shows the mean error rate on the test set, with the blue region representing the standard deviation of the error. We can see that the error mean goes down until approximately 70\% of the data is used for training. After that, a plateau occurs and eventually the error rate (and especially its standard deviation) goes up again, which is probably caused by overfitting.
+	 Figure \ref{8-1-error} shows the error rate mean and standard deviation for the individual letters. 
+\end{enumerate}
 
 \subsection{Noise}
 
-\blindlist{enumerate}[4]
+Data preprocessing algorithm:
+\begin{enumerate}
+	\item Sort and split data in 'letter' groups
+		\begin{enumerate}
+		\item For all groups: get the 'mean' letter (using k-means, or by just taking the median)	
+		\end{enumerate}
+		\begin{enumerate}
+		\item For all letters (and their supposed category label):
+			\begin{enumerate}
+			\item The noise is defined as the euclidean distance to the mean of its category
+			\item If the distance is smaller than than a certain innerclass noise threshold, e.g. twice the standard deviation of the group, we call this innerclass noise. We assume the label is correct and the distance to the mean is caused by the variance within the group.
+			\item If the distance is greater than a certain outerclass noise threshold, e.g. twice the standard deviation, we call this intraclass noise.
+			\end{enumerate}
+		\end{enumerate}
+\end{enumerate}
 
+\begin{itemize}
+	\item Noise(group i) = The number of noisy instances / number of nonnoisy instances * 100\% 
+	\item Noise is now controlled by picking a certain number of noisy instances and a number of nonnoisy instances. The intraclass noise can be separately controlled by instead of taking "the number of noisy instances", taking "number of noisy inner class instances + number of noisy intraclass instances"
+	\item A refined noise quantization could weight the noisy instances by their actual distance to the mean.
+\end{itemize}
+	 
 \vfill
 
 \section*{Conclusion}
 
-After doing the assignment, and playing with machine learning we want to get a few of your thoughts. 
-
-Where the assignment abstract began as a general summary of the topic, which you can use for your exam studying- the conclusion should be more specific to the course content. Feedback can be included here. Also I would like to know if there are any issues with the assignments. If you felt the assignment was \textbf{\hl{stupid}}, please write your arguments for here.  If you really want to get our attention, \hl{you should highlight your text} 
-
-We want to make this course as applicable and useful as possible, and this can only be done with useful and continuous feedback. We are actively investigating the best tools for teaching machine learning. 
+The assignment definitely got improved by giving us the opportunity to use Python instead of a preprogrammed Java applet. But instead of taking two different databases, the assignment could be reduced to just the letter database, and instead increase the "in-depth" on e.g. overfitting and when this happens. Writing an algorithm to determine the noise was done by us, but there was absolutely no time left to actually implement and analyze its results. 
 
 \section*{Sources}
-Sources are expected. If you follow a tutorial online, used a stack overflow answer or github repo then list it here. Getting caught will result in trouble.
-\blindenumerate[3]
+
+Theory: http://paginas.fe.up.pt/\textasciitilde ec/
+
+Code snippets: from our TA. 
 
 \newpage
 
 \onecolumn
 \section*{Appendix A: Code}
 
-Once you've answered the assignment questions please include only relevant code snippets in the appendix. You're expected to submit full working source code with the assignments in a subdirectories of your zipped assignment folder. The bellow snippets are not really relevant, but I can't give out assignment solutions here. 
+\HorRule
+
+\lstinputlisting[language=Python, numbers=left, firstline=51, 
+				lastline=61, frame=L, title=\lstname]{code/zoo_ml.py}
 
 \HorRule
 
-\lstinputlisting[language=Python, numbers=left, firstline=20, 
-				lastline=40, frame=L, title=\lstname]{code/letters_ml.py}
-
-\HorRule
-
-\lstinputlisting[language=Python, numbers=left, firstline=20, 
-				lastline=35, frame=L, title=\lstname]{code/zoo_ml.py}
+\lstinputlisting[language=Python, numbers=left, firstline=59, 
+				lastline=106, frame=L, title=\lstname]{code/letters_ml.py}
 
 \newpage
 
 
 \section*{Appendix B: Results}
 
-Your results should be written in your assignment answers Images, Figures etc. should be included in this appendix. Use \LaTeX to properly refer to the correct figure if needed, same goes for code snippets. The assignment answers should discuss the results, we are interested in assessing your knowledge. If you're told to generate 10 figures from the same data set, you need to include all the figures in sub directories of your assignment zip folder, but you should only include in the appendix as many figures as needed to back up your answer. 
-
 \HorRule
 
 \begin{figure}[h]
   \centering
-  \caption{A decision tree of zoo animals \\ Include the filename, and try to pick readable graphics}
-  \includegraphics[width=1\textwidth]{./data/q_1_c}
+  \caption{Decision tree predicting animal type}
+  \label{7-1-gini}
+  \includegraphics[width=1\textwidth]{./img/7-1-gini.jpg}
 \end{figure}
 
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting animal type}
+  \label{7-1-entropy}
+  \includegraphics[width=1\textwidth]{./img/7-1-entropy.jpg}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting animal type incl. name}
+  \label{7-2-gini}
+  \includegraphics[width=1\textwidth]{./img/7-2-gini.jpg}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting animal type incl. name}
+  \label{7-2-entropy}
+  \includegraphics[width=1\textwidth]{./img/7-2-entropy.jpg}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting whether animal is airborne}
+  \label{7-3-gini}
+  \includegraphics[width=1\textwidth]{./img/7-3-gini.jpg}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting animal name}
+  \label{7-4-gini}
+  \includegraphics[width=1\textwidth]{./img/7-4-gini.jpg}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Decision tree predicting letters: mean letter error rates}
+  \label{8-1-error}
+  \includegraphics[width=1\textwidth]{./img/letter_error.eps}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \caption{Performance on letters}
+  \label{8-2-performance}
+  \includegraphics[width=1\textwidth]{./img/performance.eps}
+\end{figure}
 \end{document}
