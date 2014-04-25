@@ -23,7 +23,7 @@ figure(1);clf;
         plot(x, mean_plus_std, 'b')
         plot(x, mean_minus_std, 'b')
 
-        title('Error')
+        title('Error', 'FontSize', 14)
         set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
                             , '60%', '70%', '80%', '90%', '100%'});
         xlabel('Percent of Total Data used for Training')
@@ -32,7 +32,7 @@ figure(1);clf;
     subplot(3,1,2)
         time = importdata('timefile');
         plot(time([1:199],1),time([1:199],2));
-        title('Training Time')
+        title('Training Time', 'FontSize', 14)
         set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
                             , '60%', '70%', '80%', '90%', '100%'});
         xlabel('Percent of Total Data used for Training')
@@ -42,7 +42,7 @@ figure(1);clf;
         hold on
         tree_size = importdata('treesize');
         plot(tree_size(:,1),tree_size(:,2));
-        title('Tree Size')
+        title('Tree Size', 'FontSize', 14)
         set(gca,'XTickLabel',{'0%', '10%', '20%', '30%', '40%', '50%'...
                             , '60%', '70%', '80%', '90%', '100%'});
         xlabel('Percent of Total Data used for Training')
@@ -60,5 +60,5 @@ figure(2)
     h=errorbar([1:26], meanError, std(error(:,[40:end]),1,2));
     set(h,'linestyle','none', 'color', 'r');
     axis([0 27 0 0.30])
-    title('Mean Letter Error Rates (20% to 95% Training mix)')
+    title('Mean Letter Error Rates (20% to 95% Training mix)', 'FontSize', 14)
 
